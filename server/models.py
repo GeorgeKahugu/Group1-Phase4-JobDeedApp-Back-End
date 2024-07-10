@@ -11,5 +11,17 @@ class Applicant(db.Model):
     jobs = db.relationship('Job', backref='employer', lazy=True)
     applications = db.relationship('Application', backref='applicant', lazy=True)
 
-    
+class Job(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.column(db.String(120), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    company= db.column(db.String(120),nullable=False)
+    location=db.Column(db.String(120), nullable=False)
+    employer_id=db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    applications=db.relationship('Application', backref='job',lazy=True)
+    reviews=db.relationship('Review', backref='job', lazy=True)
+
+
+
+
 
