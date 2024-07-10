@@ -24,8 +24,8 @@ def seed_data():
                 password=generate_password_hash('password').decode('utf-8'),
                 role='employer'
             )
-        
-        users.append(user)
+
+            users.append(user)
     db.session.add_all(users)
     db.session.commit()
 
@@ -50,7 +50,5 @@ def seed_data():
         seed_data() 
 
 
-          
-        
-        
-        
+# def generate_password_hash(password):
+#     return generate_password_hash(password)
