@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy
+db = SQLAlchemy()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -13,9 +13,9 @@ class User(db.Model):
 
 class Job(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.column(db.String(120), nullable=False)
+    title = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    company= db.column(db.String(120),nullable=False)
+    company= db.Column(db.String(120),nullable=False)
     location=db.Column(db.String(120), nullable=False)
     employer_id=db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     applications=db.relationship('Application', backref='job',lazy=True)
@@ -24,7 +24,7 @@ class Job(db.Model):
 class Application(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id=db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    job_id=db.Column(db.integer, db.ForeignKey('job.id'), nullable=False)
+    job_id=db.Column(db.Integer, db.ForeignKey('job.id'), nullable=False)
     status=db.Column(db.String(20), nullable=False)
     date_applied=db.Column(db.DateTime, nullable=False)
 

@@ -2,6 +2,8 @@ from models import User, db, Job, Application
 from app import app
 from datetime import datetime 
 from faker import Faker
+from flask_bcrypt import generate_password_hash
+
 
 def seed_data():
     fake = Faker()
@@ -40,7 +42,12 @@ def seed_data():
         
         jobs.append(job)
         db.session.add_all(jobs)
-        db.session.commit()   
+        db.session.commit()  
+
+        print("Database seeded successfully!")
+
+    if __name__ == '__main__':
+        seed_data() 
 
 
           
