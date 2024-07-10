@@ -1,18 +1,21 @@
+# from flask import Flask, render_template, request, redirect, url_for
+# from flask_sqlalchemy import SQLAlchemy
+# from datetime import datetime
 from flask import Flask
+
 
 app = Flask(__name__)
 
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///job_portal.db'  
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# db = SQLAlchemy(app)
+
+# Routes
 @app.route('/')
-def hello():
-    return '<h1>Helo world!</h1>'
+def index():
+    return 'Welcome to the job portal!'
 
-@app.route('/jobs')
-def user():
-    return '<h1>Here are the jobs for the applicants.</h1>'
-
-@app.route('/user')
-def index ():
-    return "job applications"
 
 if __name__ == '__main__':
-    app.run(port=5555, debug=True)
+    app.run(debug=True, port=5555)
+    
