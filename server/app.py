@@ -8,7 +8,7 @@ def hello():
 
 @app.route('/jobs')
 def user():
-    return '<h1>Here are the jobs for the apllicants.</h1>'
+    return '<h1>Here are the jobs for the applicants.</h1>'
 
 @app.route('/user')
 def index ():
