@@ -27,13 +27,20 @@ def create_job():
         location = request.form['location']
         employer_id = request.form['employer_id']
 
-        
+
         new_job = JOB(title=title, description=description, company=company, location=location, employer_id=employer_id)
         db.session.add(new_job)
         db.session.commit()
         return redirect(url_for('index'))
     
     return render_template('create_job.html')
+#delete jobs
+@app.route('/jobs/<int:job_id>/delete', methods=['POST'])
+def delete_job(job_id):
+    job = Job.query.get_or_404(job_id)
+    db.session.delete(job)
+    db.session.commit()
+    return redirect(url_for('list_jobs'))
 
 if __name__ == '__main__':
     app.run(debug=True, port=5555)
