@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from models import Applicant, Job, Application
 
 from flask import Flask
 
@@ -32,7 +33,7 @@ def create_job():
         employer_id = request.form['employer_id']
 
 
-        new_job = JOB(title=title, description=description, company=company, location=location, employer_id=employer_id)
+        new_job = Job(title=title, description=description, company=company, location=location, employer_id=employer_id)
         db.session.add(new_job)
         db.session.commit()
         return redirect(url_for('index'))
@@ -115,7 +116,7 @@ def create_application():
 
     return render_template('create_application.html') 
     
-#delete jobs
+#delete applications
 @app.route('/application/<int:application_id>/delete', methods=['POST'])
 def delete_application(application):
     job = Job.query.get_or_404(application)
