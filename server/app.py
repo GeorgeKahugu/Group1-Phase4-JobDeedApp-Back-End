@@ -17,6 +17,23 @@ db = SQLAlchemy(app)
 def index():
     return 'Welcome to the job portal!'
 
+#crud <create the jobs>
+@app.route('/jobs/create', methods=['GET', 'POST'])
+def create_job():
+    if request.method == 'POST':
+        title = request.form['title']
+        description = request.form['description']
+        company = request.form['company']
+        location = request.form['location']
+        employer_id = request.form['employer_id']
+
+        
+        new_job = JOB(title=title, description=description, company=company, location=location, employer_id=employer_id)
+        db.session.add(new_job)
+        db.session.commit()
+        return redirect(url_for('index'))
+    
+    return render_template('create_job.html')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5555)
