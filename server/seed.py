@@ -1,4 +1,4 @@
-from models import User, db, Job, Application
+from models import User, db, Job, Applicant
 from app import app
 from datetime import datetime 
 from faker import Faker
@@ -50,5 +50,3 @@ def seed_data():
         seed_data() 
 
 
-# def generate_password_hash(password):
-#     return generate_password_hash(password)

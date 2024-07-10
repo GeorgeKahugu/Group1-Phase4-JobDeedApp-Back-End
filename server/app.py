@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
 from models import Applicant, Job, Application
 
 
@@ -12,6 +14,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///job_portal.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+migrate= Migrate(app,db)
 
 # Routes
 @app.route('/')
