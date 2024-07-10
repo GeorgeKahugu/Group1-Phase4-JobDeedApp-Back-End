@@ -1,14 +1,16 @@
-# from flask import Flask, render_template, request, redirect, url_for
-# from flask_sqlalchemy import SQLAlchemy
-# from datetime import datetime
+from flask import Flask, render_template, request, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+
 from flask import Flask
 
 
 app = Flask(__name__)
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///job_portal.db'  
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# db = SQLAlchemy(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///job_portal.db'  
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
 
 # Routes
 @app.route('/')
