@@ -21,6 +21,16 @@ class Job(db.Model):
     applications=db.relationship('Application', backref='job',lazy=True)
     reviews=db.relationship('Review', backref='job', lazy=True)
 
+class Application(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id=db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    job_id=db.Column(db.integer, db.ForeignKey('job.id'), nullable=False)
+    status=db.Column(db.String(20), nullable=False)
+    date_applied=db.Column(db.DateTime, nullable=False)
+
+    
+
+
 
 
 
