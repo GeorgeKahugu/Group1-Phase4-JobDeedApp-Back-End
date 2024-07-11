@@ -37,7 +37,7 @@ def seed_data():
                 description=fake.text(),
                 company=fake.company(),
                 location=fake.city(),
-                employer_id=fake.random_element(elements=[user.id for user in users if user.role == 'employer'])
+                employer_id=fake.random_element(elements=[user.id for user in applicants if user.role == 'employer'])
             )
         
         jobs.append(job)
