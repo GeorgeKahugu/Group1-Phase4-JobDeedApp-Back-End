@@ -28,14 +28,52 @@ def index():
 @app.route('/applicants')
 def all_applicants():
     applicants = Applicant.query.all()
-    response_body=f"<h2>List of all Applicants</h2>"
-
+    applicants_list=[]
+    
     for applicant in applicants:
-        response_body+=f"<p>{applicant.username}</p>"
 
-    response = make_response(response_body, 200)
+        applicant_dict= {
+            "id": applicant.id,
+            "username": applicant.username,
+            "email": applicant.email,
+            "password": applicant.password,
+            "created_at": applicant.created_at,
+            "role": applicant.role
+
+        }
+        applicants_list.append(applicant_dict)
+
+    body = {
+        "count": len(applicants),
+        "applicants": applicants_list
+
+    }
+
+    response = make_response(body, 200)
 
     return response
+
+@app.route('/applicants/<int:id>')
+def get_applicant(id):
+    applicant = Applicant.query.filter_by(id=id).first()
+
+    if applicant:
+        body = {
+            "id": applicant.id,
+            "username": applicant.username,
+            "email": applicant.email,
+            "password": applicant.password,
+            "created_at": applicant.created_at,
+            "role": applicant.role
+        }
+        status = 200
+    else:
+        body = {
+            "message" f"Applicant id{id} not found."
+        }
+        status = 404
+
+    return make_response(body, status)
 
 
 
