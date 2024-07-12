@@ -1,6 +1,7 @@
 from faker import Faker
+from sqlalchemy import func
 from app import app
-from models import db, Applicant, Job
+from models import db, Applicant, Job, Application
 
 with app.app_context():
     fake=Faker()
@@ -52,4 +53,37 @@ with app.app_context():
 
     db.session.add_all(jobs)
     db.session.commit()
+    
+
+    #Delete all applications in the applications table
+    Application.query.delete()
+
+    #Empty List of Applications
+    applications = []
+
+    #Generate applications
+    for _ in range(50):
+
+        # Select a random applicant and job
+        applicant = Applicant.query.order_by(func.random()).first()
+        job = Job.query.order_by(func.random()).first()
+
+        status = fake.random.choice(['Pending', 'Accepted', 'Rejected'])
+        date_applied= fake.date_time_between(start_date='-1y', end_date='now')
+
+        applications.append(Application(
+            applicant_id=applicant.id,
+            job_id=job.id,
+            status=status,
+            date_applied=date_applied
+        ))
+
+    #Add all applications to the session and commit
+    db.session.add_all(applications)
+    db.session.commit()
+
+    print("Data seeding for applications completed.")
+
+
+
 
