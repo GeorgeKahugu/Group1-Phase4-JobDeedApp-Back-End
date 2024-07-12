@@ -23,25 +23,3 @@ def __repr__(self):
 
 
 
-# class Job(db.Model):
-#     __tablename__ = 'jobs'
-
-#     id = db.Column(db.Integer, primary_key=True)
-#     title = db.Column(db.String(120), nullable=False)
-#     description = db.Column(db.Text, nullable=False)
-#     company= db.Column(db.String(120),nullable=False)
-#     location=db.Column(db.String(120), nullable=False)
-#     employer_id=db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
-#     applicants=db.relationship('Applicant', backref='job',lazy=True)
-   
-# class Application(db.Model):
-#     __tablename__ = 'applications'
-
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_id=db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-#     job_id=db.Column(db.Integer, db.ForeignKey('job.id'), nullable=False)
-#     status=db.Column(db.String(20), nullable=False)
-#     date_applied=db.Column(db.DateTime, nullable=False)
-
-    
