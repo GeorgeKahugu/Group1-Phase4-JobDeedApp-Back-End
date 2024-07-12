@@ -1,6 +1,6 @@
 from faker import Faker
 from app import app
-from models import db, Applicant
+from models import db, Applicant, Job
 
 with app.app_context():
     fake=Faker()
@@ -27,3 +27,29 @@ with app.app_context():
     
     db.session.add_all(applicants)
     db.session.commit()
+
+
+    # Delete all records/rows in the jobs table
+    Job.query.delete()
+
+     
+    #Empty list of jobs
+    jobs = []
+
+    job_titles = [ 'Junior Software Developer', 'Senior Software Developer', 'DevOps Specialist', 'Senior Accountant',
+        'Junior Accountant', 'Data Analyst', 'Data Scientist', 'UX Designer', 'UI Designer'
+    ]
+
+    for _ in range(50):
+        title = fake.random.choice(job_titles)
+        description=fake.text()
+        company= fake.company()
+        location = fake.city()
+        employer_id = fake.uuid4()
+        print(employer_id)
+
+        jobs.append(Job(title=title, description=description, company=company, location=location, employer_id=employer_id))
+
+    db.session.add_all(jobs)
+    db.session.commit()
+
