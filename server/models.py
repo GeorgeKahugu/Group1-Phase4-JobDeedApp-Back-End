@@ -15,7 +15,7 @@ class Applicant(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.now())
     role = db.Column(db.String(20),nullable=False)
 
-    # job = db.relationship('Job', backref='applicants', lazy=True)
+    job = db.relationship('Job', backref='applicants', lazy=True)
     # applications = db.relationship('Application', backref='applicant', lazy=True)
 
 def __repr__(self):
