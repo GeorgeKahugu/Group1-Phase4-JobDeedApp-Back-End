@@ -1,10 +1,10 @@
-from flask import Flask
+from flask import Flask, make_response
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 # from flask_cors import CORS
 
 
-from models import db, Applicant     
+from models import db, Applicant, Job     
 
 # Job, Application
 
@@ -21,6 +21,21 @@ migrate= Migrate(app, db)
 db.init_app(app)
 
 
+@app.route('/')
+def index():
+    return '<h1>Welcome to The Job Application App!</h1>'
+
+@app.route('/applicants')
+def all_applicants():
+    applicants = Applicant.query.all()
+    response_body=f"<h2>List of all Applicants</h2>"
+
+    for applicant in applicants:
+        response_body+=f"<p>{applicant.username}</p>"
+
+    response = make_response(response_body, 200)
+
+    return response
 
 
 
