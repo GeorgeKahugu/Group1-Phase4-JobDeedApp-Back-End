@@ -11,9 +11,9 @@ with app.app_context():
     #Empty list of applicants
     applicants = []
 
-    roles = ['Software Developer', 'DevOps Engineer', 'Accountant', 'DataScientist']
+    roles = ['Software Developer', 'DevOps Engineer', 'Accountant', 'DataScientist', 'UX/UI Designer']
 
-    for _ in range(10):
+    for _ in range(50):
         username=fake.user_name()
         domain=fake.free_email_domain()
         email=f"{username}@{domain}"
