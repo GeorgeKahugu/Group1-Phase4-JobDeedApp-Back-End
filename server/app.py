@@ -2,12 +2,11 @@ from flask import Flask, make_response, request, jsonify
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.exceptions import NotFound
 from flask_cors import CORS
 
 
-from models import db, Applicant, Job     
-
-# ,Application
+from models import db, Applicant, Job ,Application
 
 #Initialize the Flask Application
 app = Flask(__name__)
@@ -16,6 +15,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///job_portal.db'  
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+#Allow requests from all the origins
 CORS(app)
 
 migrate= Migrate(app, db)
@@ -23,37 +23,31 @@ db.init_app(app)
 
 api = Api(app)
 
-
 class Index(Resource):
     def get(self):
-        body = {
-            "index":"Welcome to The Job Application App!"
-        }
-        response = make_response(body, 200)
+        body = {"index": "Welcome to The Job Application App!"}
+        return make_response(body, 200)
 
-        return response
-    
 api.add_resource(Index, '/')
 
 class Applicants(Resource):
     def get(self):
         applicants = Applicant.query.all()
-        applicants_list= []
-
-        for applicant in applicants:
-            applicants_list.append(applicant.to_dict())
+        applicants_list = [applicant.to_dict() for applicant in applicants]
 
         body = {
             "count": len(applicants_list),
             "applicants": applicants_list
         }
 
-        return make_response(body,200)
-    
+        return make_response(body, 200)
+
     def post(self):
-        new_applicant=Applicant(
+        new_applicant = Applicant(
             username=request.json.get("username"),
-            email=request.json.get("email")
+            email=request.json.get("email"),
+            password=request.json.get("password"),
+            role=request.json.get("role")
         )
 
         db.session.add(new_applicant)
@@ -71,7 +65,8 @@ class ApplicantResource(Resource):
 
         if applicant is None:
             return {"message": "Applicant not found"}, 404
-        return {"id": applicant.id, "username": applicant.username}, 200
+
+        return applicant.to_dict(), 200
 
     def patch(self, id):
         applicant = Applicant.query.filter_by(id=id).first()
@@ -85,35 +80,154 @@ class ApplicantResource(Resource):
         db.session.add(applicant)
         db.session.commit()
 
-        applicant_dict = applicant.to_dict()
-        response = make_response(applicant_dict, 200)
-
-        return response
+        return applicant.to_dict(), 200
 
     def delete(self, id):
         applicant = Applicant.query.get(id)
-        if applicant is None:
+
+        if not applicant:
             return {"message": "Applicant not found"}, 404
 
         db.session.delete(applicant)
         db.session.commit()
 
-        body = {
-            "delete_successful": True,
-            "message": "Applicant deleted."
-        }
-
-        response = make_response(body, 200)
-        return response
+        return {"delete_successful": True, "message": "Applicant deleted."}, 200
 
 api.add_resource(ApplicantResource, '/applicants/<int:id>')
 
+class Jobs(Resource):
+    def get(self):
+        jobs = Job.query.all()
+        jobs_list = [job.to_dict() for job in jobs]
+
+        body = {
+            "count": len(jobs_list),
+            "jobs": jobs_list
+        }
+
+        return make_response(body, 200)
+
+    def post(self):
+        new_job = Job(
+            title=request.json.get("title"),
+            description=request.json.get("description"),
+            company=request.json.get("company"),
+            location=request.json.get("location"),
+            employer_id=request.json.get("employer_id")
+        )
+
+        db.session.add(new_job)
+        db.session.commit()
+
+        response = make_response(new_job.to_dict(), 201)
+
+        return response
+
+api.add_resource(Jobs, '/jobs')
+
+class JobResource(Resource):
+    def get(self, id):
+        job = Job.query.get(id)
+
+        if job is None:
+            return {"message": "Job not found"}, 404
+
+        return job.to_dict(), 200
+
+    def patch(self, id):
+        job = Job.query.filter_by(id=id).first()
+
+        if not job:
+            return {"message": "Job not found"}, 404
+
+        for attr in request.json:
+            setattr(job, attr, request.json.get(attr))
+
+        db.session.add(job)
+        db.session.commit()
+
+        return job.to_dict(), 200
+
+    def delete(self, id):
+        job = Job.query.get(id)
+
+        if not job:
+            return {"message": "Job not found"}, 404
+
+        db.session.delete(job)
+        db.session.commit()
+
+        return {"delete_successful": True, "message": "Job deleted."}, 200
+
+api.add_resource(JobResource, '/jobs/<int:id>')
+
+class Applications(Resource):
+    def get(self):
+        applications = Application.query.all()
+        applications_list = [application.to_dict() for application in applications]
+
+        body = {
+            "count": len(applications_list),
+            "applications": applications_list
+        }
+
+        return make_response(body, 200)
+
+    def post(self):
+        new_application = Application(
+            applicant_id=request.json.get("applicant_id"),
+            job_id=request.json.get("job_id"),
+            status=request.json.get("status")
+        )
+
+        db.session.add(new_application)
+        db.session.commit()
+
+        response = make_response(new_application.to_dict(), 201)
+
+        return response
+
+api.add_resource(Applications, '/applications')
+
+class ApplicationDetailResource(Resource):
+    def get(self, id):
+        application = Application.query.get(id)
+
+        if application is None:
+            return {"message": "Application not found"}, 404
+
+        return application.to_dict(), 200
+
+    def patch(self, id):
+        application = Application.query.filter_by(id=id).first()
+
+        if not application:
+            return {"message": "Application not found"}, 404
+
+        for attr in request.json:
+            setattr(application, attr, request.json.get(attr))
+
+        db.session.add(application)
+        db.session.commit()
+
+        return application.to_dict(), 200
+
+    def delete(self, id):
+        application = Application.query.get(id)
+
+        if not application:
+            return {"message": "Application not found"}, 404
+
+        db.session.delete(application)
+        db.session.commit()
+
+        return {"delete_successful": True, "message": "Application deleted."}, 200
+
+api.add_resource(ApplicationDetailResource, '/applications/<int:id>')
+
+
 def create_tables():
     db.create_all()
-
-
-
-
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
