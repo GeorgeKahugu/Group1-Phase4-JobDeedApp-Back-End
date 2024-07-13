@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import NotFound
 from flask_cors import CORS
 
-
+from datetime import datetime
 from models import db, Applicant, Job ,Application
 
 #Initialize the Flask Application
@@ -25,7 +25,7 @@ api = Api(app)
 
 class Index(Resource):
     def get(self):
-        body = {"index": "Welcome to The Job Application App!"}
+        body = {"index": "Welcome to JobDeed!"}
         return make_response(body, 200)
 
 api.add_resource(Index, '/')
@@ -41,8 +41,8 @@ class Applicants(Resource):
         }
 
         return make_response(body, 200)
-
-    def post(self):
+    
+    def post(self):  
         new_applicant = Applicant(
             username=request.json.get("username"),
             email=request.json.get("email"),
@@ -68,6 +68,7 @@ class ApplicantResource(Resource):
 
         return applicant.to_dict(), 200
 
+
     def patch(self, id):
         applicant = Applicant.query.filter_by(id=id).first()
 
@@ -75,23 +76,36 @@ class ApplicantResource(Resource):
             return {"message": "Applicant not found"}, 404
 
         for attr in request.json:
-            setattr(applicant, attr, request.json.get(attr))
+            if attr == 'created_at':
+                
+                try:
+                    date_value = datetime.fromisoformat(request.json.get(attr))
+                    setattr(applicant, attr, date_value)
+                except ValueError:
+                    return {"message": "Invalid datetime format for 'created_at'"}, 400
+            else:
+                setattr(applicant, attr, request.json.get(attr))
 
         db.session.add(applicant)
         db.session.commit()
 
         return applicant.to_dict(), 200
 
+
     def delete(self, id):
         applicant = Applicant.query.get(id)
 
         if not applicant:
             return {"message": "Applicant not found"}, 404
+        
+        applications = Application.query.filter_by(applicant_id=id).all()
+        for application in applications:
+            db.session.delete(application)
 
         db.session.delete(applicant)
         db.session.commit()
 
-        return {"delete_successful": True, "message": "Applicant deleted."}, 200
+        return {"delete_successful": True, "message": "Applicant and related applications deleted."}, 200
 
 api.add_resource(ApplicantResource, '/applicants/<int:id>')
 
