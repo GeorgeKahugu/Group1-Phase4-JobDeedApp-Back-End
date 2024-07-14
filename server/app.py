@@ -36,10 +36,10 @@ class Index(Resource):
 api.add_resource(Index, '/')
 
 class Applicants(Resource):
-    @jwt_required()
+    # @jwt_required()
     def get(self):
-        current_applicant = get_jwt_identity()
-        print(current_applicant)
+        # current_applicant = get_jwt_identity()
+        # print(current_applicant)
         applicants = Applicant.query.all()
         applicants_list = [applicant.to_dict() for applicant in applicants]
 
