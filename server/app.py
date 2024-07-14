@@ -155,7 +155,14 @@ class JobResource(Resource):
             return {"message": "Job not found"}, 404
 
         for attr in request.json:
-            setattr(job, attr, request.json.get(attr))
+            if attr == 'created_at':
+                try:
+                    date_value = datetime.fromisoformat(request.json.get(attr))
+                    setattr(job, attr, date_value)
+                except ValueError:
+                    return {"message": "Invalid datetime format for 'created_at'"}, 400
+            else:
+                setattr(job, attr, request.json.get(attr))
 
         db.session.add(job)
         db.session.commit()
@@ -167,11 +174,16 @@ class JobResource(Resource):
 
         if not job:
             return {"message": "Job not found"}, 404
+        
+        applications=Application.query.filter_by(job_id=id).all()
+
+        for application in applications:
+            db.session.delete(application)
 
         db.session.delete(job)
         db.session.commit()
 
-        return {"delete_successful": True, "message": "Job deleted."}, 200
+        return {"delete_successful": True, "message": "Job and related applications deleted."}, 200
 
 api.add_resource(JobResource, '/jobs/<int:id>')
 
@@ -188,10 +200,22 @@ class Applications(Resource):
         return make_response(body, 200)
 
     def post(self):
+        
+        date_applied_str = request.json.get("date_applied")
+        if date_applied_str:
+            try:
+                date_applied = datetime.fromisoformat(date_applied_str)
+            except ValueError:
+                return {"message": "Invalid datetime format for 'date_applied'"}, 400
+        else:
+            date_applied = datetime.now()
+        
+
         new_application = Application(
             applicant_id=request.json.get("applicant_id"),
             job_id=request.json.get("job_id"),
-            status=request.json.get("status")
+            status=request.json.get("status"),
+            date_applied=date_applied  
         )
 
         db.session.add(new_application)
@@ -219,7 +243,14 @@ class ApplicationDetailResource(Resource):
             return {"message": "Application not found"}, 404
 
         for attr in request.json:
-            setattr(application, attr, request.json.get(attr))
+            if attr == 'date_applied':
+                try:
+                    date_value = datetime.fromisoformat(request.json.get(attr))
+                    setattr(application, attr, date_value)
+                except ValueError:
+                    return {"message": "Invalid datetime format for 'date_applied'"}, 400
+            else:
+                setattr(application, attr, request.json.get(attr))
 
         db.session.add(application)
         db.session.commit()

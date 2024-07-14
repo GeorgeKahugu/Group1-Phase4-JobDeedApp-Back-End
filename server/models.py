@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
+from datetime import datetime
 
 metadata = MetaData()
 db = SQLAlchemy(metadata=metadata)
@@ -69,7 +70,10 @@ class Application(db.Model):
     applicant_id = db.Column(db.Integer, db.ForeignKey('applicants.id'), nullable=False)
     job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=False)
     status = db.Column(db.String(20), nullable=False)
-    date_applied = db.Column(db.DateTime, nullable=False)
+    date_applied = db.Column(db.DateTime, nullable=False,default=datetime.utcnow)
+
+    # applicant = db.relationship("Applicant", back_populates="applications")
+    # job = db.relationship("Job", back_populates="applications")
 
     def __repr__(self):
         return f"Application {self.id}: {self.applicant_id} - {self.job_id}>"
@@ -80,6 +84,6 @@ class Application(db.Model):
             'applicant_id': self.applicant_id,
             'job_id': self.job_id,
             'status': self.status,
-            'date_applied': self.date_applied.isoformat(),
+            'date_applied': self.date_applied.isoformat() if self.date_applied else None
             
         }
