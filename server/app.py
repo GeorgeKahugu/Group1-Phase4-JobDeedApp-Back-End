@@ -1,8 +1,8 @@
-from flask import Flask, make_response, request, jsonify
+from flask import Flask, make_response, request
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.exceptions import NotFound
+from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_cors import CORS
 
 from datetime import datetime
@@ -14,9 +14,14 @@ app = Flask(__name__)
 #Configure the database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///job_portal.db'  
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_SECRET_KEY'] = "super-secret"
 
 #Allow requests from all the origins
 CORS(app)
+
+bcrypt=Bcrypt(app)
+jwt=JWTManager(app)
+
 
 migrate= Migrate(app, db)
 db.init_app(app)
@@ -31,7 +36,10 @@ class Index(Resource):
 api.add_resource(Index, '/')
 
 class Applicants(Resource):
+    @jwt_required()
     def get(self):
+        current_applicant = get_jwt_identity()
+        print(current_applicant)
         applicants = Applicant.query.all()
         applicants_list = [applicant.to_dict() for applicant in applicants]
 
@@ -42,18 +50,30 @@ class Applicants(Resource):
 
         return make_response(body, 200)
     
-    def post(self):  
+    def post(self):
+        #check if email is already taken 
+        email = Applicant.query.filter_by(email=request.json.get('email')).first();
+
+        if email:
+            return make_response ({"message":"Email already taken"}, 422)
         new_applicant = Applicant(
             username=request.json.get("username"),
             email=request.json.get("email"),
-            password=request.json.get("password"),
+            password=bcrypt.generate_password_hash(request.json.get("password")),
             role=request.json.get("role")
         )
 
         db.session.add(new_applicant)
         db.session.commit()
 
-        response = make_response(new_applicant.to_dict(), 201)
+        access_token = create_access_token(identity=new_applicant.id)
+
+        response = {
+            "applicant": new_applicant.to_dict(),
+            "access_token": access_token 
+        }
+
+        response = make_response(response, 201)
 
         return response
 

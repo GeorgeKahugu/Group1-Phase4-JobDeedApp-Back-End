@@ -26,7 +26,6 @@ class Applicant(db.Model):
             'id': self.id,
             'username': self.username,
             'email': self.email,
-            'password': self.password,
             'created_at': self.created_at.isoformat(),
             'role': self.role,
            
