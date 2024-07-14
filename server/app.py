@@ -56,6 +56,10 @@ class Applicants(Resource):
 
         if email:
             return make_response ({"message":"Email already taken"}, 422)
+
+            password = request.json.get("password")
+            if not password:
+                return make_response({"message":"Password must be provided and non-empty"}, 400)
         new_applicant = Applicant(
             username=request.json.get("username"),
             email=request.json.get("email"),
