@@ -6,7 +6,7 @@ from sqlalchemy.orm import validates
 import bcrypt
 import logging
 
-from werkzeug.security import generate_password_hash, check_password_hash
+
 
 # Initialize Flask application
 app = Flask(__name__)
