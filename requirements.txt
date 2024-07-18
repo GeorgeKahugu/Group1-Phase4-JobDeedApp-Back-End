@@ -6,3 +6,10 @@ sqlalchemy-serializer==1.4.12
 Flask-Migrate==3.1.0
 Flask-RESTful==0.3.9
 Flask-bcrypt ==1.0.1
+Flask-jwt-extended==4.6.0
+Flask-cors== 4.0.1
+Faker== 26.0.0
+Werkzeug== 3.0.3
+
+
+
