@@ -13,26 +13,26 @@ The JobDeed App Api consists of Applicants, Jobs and Applications table, a user 
 ### GET/POST/PATCH/DELETE (applicants/applicant by ID)
 
     - A user can get all the applicants in the database.
-   -A user can get an applicant by ID from the database.
-   -A user can post an applicant to the database.
-   -A user can patch an applicant by ID in the database.
-   -A user can delete an applicant by ID from the database.
+    -A user can get an applicant by ID from the database.
+    -A user can post an applicant to the database.
+    -A user can patch an applicant by ID in the database.
+    -A user can delete an applicant by ID from the database.
 
 ### GET/POST/PATCH/DELETE (jobs/job by ID)
 
     - A user can get all the jobs in the database.
-   -A user can get a job by ID from the database.
-   -A user can post an job to the database.
-   -A user can patch a job by ID in the database.
-   -A user can delete a job by ID from the database.
+    -A user can get a job by ID from the database.
+    -A user can post an job to the database.
+    -A user can patch a job by ID in the database.
+    -A user can delete a job by ID from the database.
 
 ### GET/POST/PATCH/DELETE (applications/applications by ID)
 
-     - A user can get all the applications in the database.
-   -A user can get an application by ID from the database.
-   -A user can post an application to the database.
-   -A user can patch an application by ID in the database.
-   -A user can delete an application by ID from the database.
+    - A user can get all the applications in the database.
+    -A user can get an application by ID from the database.
+    -A user can post an application to the database.
+    -A user can patch an application by ID in the database.
+    -A user can delete an application by ID from the database.
 
 ## How to Use
 
