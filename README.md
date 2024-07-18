@@ -56,7 +56,7 @@ The JobDeed App Api consists of Applicants, Jobs and Applications table, a user 
 ## Contributors
 
 - [George Kahugu](https://github.com/GeorgeKahugu)
-- [Fredrick Gachihi] (<https://github.com/Fredrick-Gachihi>)
-- [Felleria Nagwanga] (<https://github.com/Felleria>)
+- [Fredrick Gachihi](<https://github.com/Fredrick-Gachihi>)
+- [Felleria Nagwanga](<https://github.com/Felleria>)
 
 ## License
