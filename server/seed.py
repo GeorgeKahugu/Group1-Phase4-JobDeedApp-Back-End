@@ -20,8 +20,16 @@ with app.app_context():
         email=f"{username}@{domain}"
         password=fake.password()
         role= fake.random.choice(roles)
+
+        # Check if email is already taken
+        existing_applicant = Applicant.query.filter_by(email=email).first()
+        if existing_applicant:
+            continue  
+
+        # Validate role against predefined roles
+        if role not in roles:
+            role = fake.random.choice(roles) 
         
-    
         applicants.append(Applicant(username=username, email=email, password=password, role=role))
 
 
@@ -49,6 +57,14 @@ with app.app_context():
         employer_id = fake.uuid4()
         print(employer_id)
 
+        # Validate lengths
+        if len(title) > 120:
+            title = title[:120]  # Truncate if too long
+        if len(company) > 120:
+            company = company[:120]
+        if len(location) > 120:
+            location = location[:120]
+
         jobs.append(Job(title=title, description=description, company=company, location=location, employer_id=employer_id))
 
     db.session.add_all(jobs)
@@ -70,6 +86,14 @@ with app.app_context():
 
         status = fake.random.choice(['Pending', 'Accepted', 'Rejected'])
         date_applied= fake.date_time_between(start_date='-1y', end_date='now')
+
+        # Ensure applicant and job exist
+        if not applicant or not job:
+            continue 
+
+        # Validate status
+        if status not in ['Pending', 'Accepted', 'Rejected']:
+            status = fake.random.choice(['Pending', 'Accepted', 'Rejected'])  
 
         applications.append(Application(
             applicant_id=applicant.id,
